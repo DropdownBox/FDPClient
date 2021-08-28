@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed
+import net.ccbluex.liquidbounce.features.module.modules.movement.Fly
 import net.ccbluex.liquidbounce.utils.MovementUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.ccbluex.liquidbounce.utils.misc.FallingPlayer
@@ -40,7 +41,7 @@ class Velocity : Module() {
                                                       "AAC5.2.0", "AAC5.2.0Combat", "HuaYuTing",
                                                       "Reverse", "SmoothReverse", 
                                                       "Jump", 
-                                                      "Phase", "PacketPhase", "Glitch",
+                                                      "Phase", "PacketPhase", "Glitch", "Spoof",
                                                       "Legit"), "Simple")
 
     // Reverse
@@ -71,6 +72,9 @@ class Velocity : Module() {
         .displayable { modeValue.get().contains("RedeSky",true) }
     private val rspDengerValue = BoolValue("RedeskyOnlyDanger",false)
         .displayable { modeValue.get().contains("RedeSky",true) }
+    
+
+    private val noAirValue = BoolValue("NoAir",false)
 
     /**
      * VALUES
@@ -104,7 +108,7 @@ class Velocity : Module() {
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if(redeCount<24) redeCount++
-        if (mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb)
+        if (mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb || (noAirValue.get() && !mc.thePlayer.onGround))
             return
 
         when (modeValue.get().toLowerCase()) {
@@ -161,11 +165,13 @@ class Velocity : Module() {
             }
             
             "aac5.2.0combat" -> {
+                if(LiquidBounce.moduleManager[Fly::class.java].state) return
                 if (mc.thePlayer.hurtTime>0 && velocityInput){
                     velocityInput = false
                     mc.thePlayer.motionX = 0.0
                     mc.thePlayer.motionZ = 0.0
                     mc.thePlayer.motionY = 0.0
+                    mc.thePlayer.jumpMovementFactor = -0.002f
                     mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true))
                 }
                 if(velocityTimer.hasTimePassed(80L) && velocityInput) {
@@ -173,6 +179,7 @@ class Velocity : Module() {
                     mc.thePlayer.motionX = templateX/8000.0
                     mc.thePlayer.motionZ = templateZ/8000.0
                     mc.thePlayer.motionY = templateY/8000.0
+                    mc.thePlayer.jumpMovementFactor = -0.002f
                 }
             }
             
@@ -238,7 +245,8 @@ class Velocity : Module() {
     @EventTarget
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
-
+                if (noAirValue.get() && !mc.thePlayer.onGround)
+            return
         if (packet is S12PacketEntityVelocity) {
             if (mc.thePlayer == null || (mc.theWorld?.getEntityByID(packet.entityID) ?: return) != mc.thePlayer)
                 return
@@ -265,6 +273,7 @@ class Velocity : Module() {
                 }
 
                 "aac5.2.0" -> {
+                    if(LiquidBounce.moduleManager[Fly::class.java].state) return
                     event.cancelEvent()
                     mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true))
                 }
@@ -284,11 +293,17 @@ class Velocity : Module() {
                 }
                 
                 "aac5.2.0combat" -> {
+                    if(LiquidBounce.moduleManager[Fly::class.java].state) return
                     event.cancelEvent()
                     velocityInput = true
                     templateX = packet.motionX
                     templateZ = packet.motionZ
                     templateY = packet.motionY
+                }
+                
+                "spoof" -> {
+                    event.cancelEvent()
+                    mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(packet.motionX/8000.0, packet.motionY/8000.0, packet.motionZ/8000.0, false))
                 }
 
                 "packetphase" -> {
@@ -391,6 +406,8 @@ class Velocity : Module() {
 
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
+                        if (noAirValue.get() && !mc.thePlayer.onGround)
+            return
         when (modeValue.get().toLowerCase()) {
             "legit" -> {
                 if(pos==null||mc.thePlayer.hurtTime<=0)
@@ -436,9 +453,8 @@ class Velocity : Module() {
 
     @EventTarget
     fun onJump(event: JumpEvent) {
-        if (mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb)
+        if (mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb || (noAirValue.get() && !mc.thePlayer.onGround))
             return
-
         when (modeValue.get().toLowerCase()) {
             "aacpush" -> {
                 jump = true

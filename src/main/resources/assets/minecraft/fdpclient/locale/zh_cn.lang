@@ -2,10 +2,10 @@
 ui.altmanager=账号管理
 ui.mods=模组管理
 ui.background=背景
-ui.website=官网
 ui.serverSpoof=服务器伪装
 ui.antiForge=反Forge检测
 ui.reconnect=重新连接
+ui.changelog=更新日志
 
 ui.back=返回
 ui.status=状态
@@ -25,7 +25,6 @@ ui.gameover.close=关闭此界面
 ui.disconnect.randomAlt=随机正版账号
 ui.disconnect.randomOffline=随机离线账号
 
-ui.update.available=有可用更新！
 ui.update.released=FDP Client %s 发布了!
 ui.update.dismiss=忽略
 ui.update.download=下载
@@ -536,6 +535,7 @@ module.HUD.name=界面
 module.HUD.description=开关界面
 module.HUD.value.BetterHotbar.name=更好的快捷栏
 module.HUD.value.HotbarAlpha.name=快捷栏透明度
+module.HUD.value.Blur.name=模糊效果
 module.HUD.value.InventoryParticle.name=物品栏粒子
 module.HUD.value.FontChat.name=聊天栏字体
 module.HUD.value.ChatRect.name=聊天栏背景
@@ -951,8 +951,7 @@ module.Speed.value.CubeCraft-PortLength.name=CubeCraft-PortLength
 module.Sprint.name=自动疾跑
 module.Sprint.description=自动在移动时疾跑
 module.Sprint.value.AllDirections.name=全方向
-module.Sprint.value.AllDirectionsRotate.name=全方向转头
-module.Sprint.value.AllDirectionsSpoof.name=全方向欺骗
+module.Sprint.value.AllDirectionsBypass.name=全方向绕过
 module.Sprint.value.Blindness.name=失明
 module.Sprint.value.Food.name=食物
 module.Sprint.value.CheckServerSide.name=服务端侧检测

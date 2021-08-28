@@ -2,10 +2,10 @@
 ui.altmanager=AltManager
 ui.mods=Mods
 ui.background=Background
-ui.website=Website
 ui.serverSpoof=ServerSpoof
 ui.antiForge=AntiForge
 ui.reconnect=Reconnect
+ui.changelog=ChangeLog
 
 ui.back=Back
 ui.status=Status
@@ -25,7 +25,6 @@ ui.gameover.close=Hide This Screen
 ui.disconnect.randomAlt=Random Alt
 ui.disconnect.randomOffline=Random Offline
 
-ui.update.available=Update available!
 ui.update.released=FDP Client %s got released!
 ui.update.dismiss=Dismiss
 ui.update.download=Download
@@ -537,6 +536,7 @@ module.HUD.description=Toggles visibility of the HUD
 module.HUD.value.BetterHotbar.name=BetterHotbar
 module.HUD.value.HotbarAlpha.name=HotbarAlpha
 module.HUD.value.InventoryParticle.name=InventoryParticle
+module.HUD.value.Blur.name=Blur
 module.HUD.value.FontChat.name=FontChat
 module.HUD.value.ChatRect.name=ChatRect
 module.HUD.value.ChatCombine.name=ChatCombine
@@ -951,8 +951,7 @@ module.Speed.value.CubeCraft-PortLength.name=CubeCraft-PortLength
 module.Sprint.name=Sprint
 module.Sprint.description=Automatically sprints all the time
 module.Sprint.value.AllDirections.name=AllDirections
-module.Sprint.value.AllDirectionsRotate.name=AllDirectionsRotate
-module.Sprint.value.AllDirectionsSpoof.name=AllDirectionsSpoof
+module.Sprint.value.AllDirectionsBypass.name=AllDirectionsBypass
 module.Sprint.value.Blindness.name=Blindness
 module.Sprint.value.Food.name=Food
 module.Sprint.value.CheckServerSide.name=CheckServerSide

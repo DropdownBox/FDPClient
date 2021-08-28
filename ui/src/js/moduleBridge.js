@@ -6,16 +6,17 @@ const ListValue = java.importClass("net.ccbluex.liquidbounce.value.ListValue")
 const IntegerValue = java.importClass("net.ccbluex.liquidbounce.value.IntegerValue")
 const FloatValue = java.importClass("net.ccbluex.liquidbounce.value.FloatValue")
 const FontValue = java.importClass("net.ccbluex.liquidbounce.value.FontValue")
-const LanguageManager = java.importClass("net.ccbluex.liquidbounce.ui.i18n.LanguageManager").INSTANCE
 const ModuleCategory = java.importClass("net.ccbluex.liquidbounce.features.module.ModuleCategory")
 const GameFontRenderer = java.importClass("net.ccbluex.liquidbounce.ui.font.GameFontRenderer")
+const ClickGUI = java.importClass("net.ccbluex.liquidbounce.features.module.modules.client.ClickGUI").INSTANCE
 const Fonts = java.importClass("net.ccbluex.liquidbounce.ui.font.Fonts")
 const Float = java.importClass("java.lang.Float")
 const Integer = java.importClass("java.lang.Integer")
 
 function getDataJson(module) {
     var json = {
-        Name: LanguageManager.replace(module.getLocalizedName()).replace(/%/g, ""),
+        Name: translate(module.getLocalizedName()),
+        Description: translate(module.getDescription()),
         Key: module.getName(),
         Enable: module.getState(),
         Setting: []
@@ -23,19 +24,16 @@ function getDataJson(module) {
     bridge.forEach(module.getValues(), function(value) {
         if (bridge.instanceOf(BoolValue, value)) {
             json.Setting.push({
-                Name: LanguageManager.replace(value.getLocaledName()),
                 Type: 'Bool',
                 Val: value.get()
             })
         } else if (bridge.instanceOf(TextValue, value)) {
             json.Setting.push({
-                Name: LanguageManager.replace(value.getLocaledName()),
                 Type: 'Text',
                 Val: value.get()
             })
         } else if (bridge.instanceOf(ListValue, value)) {
             var select = {
-                Name: LanguageManager.replace(value.getLocaledName()),
                 Type: 'Mode',
                 Val: value.get(),
                 Vals: []
@@ -47,7 +45,6 @@ function getDataJson(module) {
             json.Setting.push(select)
         } else if (bridge.instanceOf(IntegerValue, value)) {
             json.Setting.push({
-                Name: LanguageManager.replace(value.getLocaledName()),
                 Type: 'Num',
                 Val: value.get(),
                 Step: 1,
@@ -56,7 +53,6 @@ function getDataJson(module) {
             })
         } else if (bridge.instanceOf(FloatValue, value)) {
             json.Setting.push({
-                Name: LanguageManager.replace(value.getLocaledName()),
                 Type: 'Num',
                 Val: value.get(),
                 Step: .1,
@@ -65,7 +61,6 @@ function getDataJson(module) {
             })
         } else if (bridge.instanceOf(FontValue, value)) {
             var select = {
-                Name: LanguageManager.replace(value.getLocaledName()),
                 Type: 'Mode',
                 Val: getFontName(value.get()),
                 Vals: []
@@ -76,7 +71,7 @@ function getDataJson(module) {
             json.Setting.push(select)
         }
         var lastJson = json.Setting[json.Setting.length - 1]
-        lastJson.Name = lastJson.Name.replace(/%/g, "")
+        lastJson.Name = translate(value.getLocaledName())
         lastJson.Key = value.getName()
         lastJson.isVisable = value.getDisplayable
     })
@@ -98,7 +93,7 @@ function getCategoryJson() {
     for (var i = 0; i < values.length; i++) {
         var category = values[i]
         var categoryJson = {
-            Type: LanguageManager.replace(category.getDisplayName()).replace(/%/g, ""),
+            Type: translate(category.getDisplayName()),
             Icon: category.getHtmlIcon(),
             modules: []
         }
